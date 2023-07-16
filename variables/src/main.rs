@@ -40,11 +40,4 @@ fn main() {
     println!("tup: x:{x} y:{y} z:{z}");
     println!("first element of tup: {}", tup.0);
 
-    // arrays are all one type and fixed length
-    let a = [1, 2, 3, 4, 5, 6];
-    println!("a: {:?}", a);
-    // can repeat elements:
-    let a = [3; 5];
-    println!("a: {:?}", a);
-    println!("first element of a: {}", a[0]);
 }
