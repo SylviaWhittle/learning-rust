@@ -152,5 +152,58 @@ fn main() {
         println!("{b}");
     }
 
+    // Hash maps
+    // Type: HashMap<K, V>
+    // Stores keys and values.
+
+    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+
+    // All keys must have the same type as each other.
+
+    // Accessing a value
+    let team_name = String::from("Blue");
+    let score = scores.get(&team_name).copied().unwrap_or(0);
+    // Note that .get returns an Option<&V>; if there is no value for that key
+    // in the hash map, get will return None. We handle this error by
+    // calling copied to get an Option<i32> rather than an Option<&i32>,
+    // then unwrap_or to set score to zero if scores doesn't have an entry
+    // for that key.
+    // Note: unwrap_or() returns the value, or if none, a default value specified.
+
+    // Iterating over each key, value pair in a HashMap
+    for (key, value) in &scores {
+        println!("{key} : {value}")
+    }
+
+    // Note that this will print them in an arbitrary order
+
+    // Updating hashmaps
+    // Overwriting values
+    scores.insert(String::from("Blue"), 25);
+    println!("{:?}", scores)
+    // Adding only if key isn't present
+    scores.entry(String::from("Yellow")).or_insert(50);
+    // Updating a value based on an old value
+    // This code counts how many times each word appears in some text
+    let text = "hello world wonderful world";
+
+    let mut map = HashMap::new();
+    for word in text.split_whitespace() {
+        let count = map.entry(word).or_insert(0);
+        *count += 1;
+    }
+    println!("{:?}", map);
+
+    // The or_insert method returns a mutable reference (&mut V) to the value
+    // for the specified key.
+    // We store the mutable reference in the count variable, so we have to 
+    // dereference count first using the * operator to assign the value.
+
+    // Hashing functions
     
 }
