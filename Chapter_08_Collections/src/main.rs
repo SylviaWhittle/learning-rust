@@ -83,4 +83,74 @@ fn main() {
         let v = vec![1, 2, 3, 4];
         // do stuff with v
     } // <- v goes out of scope and is freed along with its elements
+
+    // UTF-8 Encoded text with Strings
+    let mut s = String::new();
+
+    let data = "initial contents";
+    let s = data.to_string();
+
+    let s = String::from("initial contents");
+
+    // Updating a string
+    let mut s = String::from("foo");
+    s.push_str("bar");
+    println!("{s}");
+
+    // note that push_str() takes a string slice as we don't usually
+    // want to take ownership of the string
+    let mut s1 = String::from("foo");
+    let s2 = "bar";
+    s1.push_str(s2);
+    println!("s2 is {s2}");
+
+    // The push method for strings just pushes a single character, as
+    // strings are vectors.
+    let mut s = String::from("lo");
+    s.push('l');
+
+    // Concatenation with + or format! macro
+    let s1 = String::from("Hello, ");
+    let s2 = String::from("world");
+    // Note that we move s1 here so it cannot be used any more
+    // We need the & for s2 as the + operator takes a String, and a &str
+    // slice reference. It does not take two Strings, or two refrences.
+    // This is to save on memory.
+    // Note that &s2 is actually a &String type and not a &str slice,
+    // but rust can dereference &String to &str for us.
+    let s3 = s1 + &s2;
+
+    // format!
+    // For longer and more complex concatenation, use format!
+    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = format!("{s1} - {s2} - {s3}");
+
+    // Indexing into Strings
+    // You cannot index a string like you would in Python
+    let s1 = String::from("hello");
+    // let h = s1[0];
+    // Why not?
+    // A String is a wrapper over a Vec<u8>.
+    let hello = String::from("hola");
+    // Here the length will be 4 which means it is 4 bytes long.
+    // Each letter takes 1 byte.
+    // This is not always the case though
+    let hello = String::from("Здравствуйте");
+    // This String takes two bytes of storage per character!
+    // Therefore an index won't correlate to a valid Unicode
+    // scalar value.
+
+    // Iterating over Strings
+    for c in "Зд".chars() {
+        println!("{c}");
+    }
+
+    for b in "Зд".bytes() {
+        println!("{b}");
+    }
+
+    
 }
