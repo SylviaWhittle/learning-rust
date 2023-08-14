@@ -11,13 +11,29 @@ pub struct Config {
 impl Config {
     // The 'static lifetime indicates that the variable can last
     // for the length of the program.
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {
+    // The type of the iterator that env::args returns is std::env::Args
+    // and that type implements the Iterator trait and returns String values.
+    // Here we have set args to have a generic type with trait bounds
+    // impl Iterator<Item = String> instead of &[String].
+    // This means that args can be any type that implements
+    // Iterator and returns String items.
+    // We add the mut since we will be mutating args by iterating over it.
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
         if args.len() < 3 {
             return Err("not enough arguments");
         }
+        // Skip the initial argument as it's the path of the program running.
+        args.next();
 
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file path"),
+        };
 
         let ignore_case = env::var("IGNORE_CASE").is_ok();
         println!("ignore case: {}", ignore_case);
@@ -58,16 +74,20 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 // Note that here we clarify that the lifetime of the return strings will
 // be the lifetime of the contents, and not the query.
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
+    // let mut results = Vec::new();
+    // for line in contents.lines() {
+    //     // search for the query in the line
+    //     if line.contains(query) {
+    //         results.push(line);
+    //     }
+    // }
+    // results
 
-    for line in contents.lines() {
-        // search for the query in the line
-        if line.contains(query) {
-            results.push(line);
-        }
-    }
-
-    results
+    // Use iterators instead
+    contents
+        .lines()
+        .filter(|line: &&str| line.contains(query))
+        .collect()
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
